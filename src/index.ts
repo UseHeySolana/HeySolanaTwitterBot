@@ -24,7 +24,7 @@ const twit = new TwitterBot(USER_NAME, PASSWORD);
  * 2. Respond to Mentions by Quoting
  * 3.
  */
-app.get("/check-for-mentions", async (req: any, res: Response) => {
+app.post("/check-for-mentions", async (req: any, res: Response) => {
   const { tag } = req.body;
 
   try {
