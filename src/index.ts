@@ -1,35 +1,43 @@
 import { Request, Response } from "express";
-import openAiSTT from "./requests/stt";
-import openAiTTS from "./requests/tts";
+import { checkLogin, getMentionTweets, saveMentionsOnDB } from "./tweet";
 
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const multer = require("multer");
 
-const upload = multer({ dest: "uploads/" });
-
 dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get("/api/stt", upload.single("audio"), async (req: any, res: Response) => {
-  if (!req.file) {
-    return res.status(400).json({ error: "No file uploaded" });
-  }
+/**
+ * Functions to be done
+ * 1. Scrape Tweet To Get Mentions
+ * 2. Respond to Mentions by Quoting
+ * 3.
+ */
+app.get(
+  "/check-for-mentions",
+  checkLogin(),
+  async (req: any, res: Response) => {
+    const { tag } = req.body;
 
-  try {
-    const file = req.file;
-    const response = await openAiSTT(file);
-    if (response) {
-      return res.status(200).json({ status: "success", text: response });
+    try {
+      // Get Tweets
+      const tweets = await getMentionTweets(tag);
+      // Save tweets sequentially
+      for (const tweet of tweets) {
+        await saveMentionsOnDB(tweet); // Ensuring sequential execution
+      }
+
+      return res.json({ message: "Tweets Scraped and Saved" });
+    } catch (e: any) {
+      console.error(e);
+      res.status(500).json({ error: "Failed: " + e.message });
     }
-  } catch (e: any) {
-    console.error(e);
-    res.json({ error: "Failed" + e });
   }
-});
+);
 
 app.get("/api/tts", async (req: any, res: Response) => {
   try {
@@ -37,7 +45,7 @@ app.get("/api/tts", async (req: any, res: Response) => {
     if (!text) {
       return res.status(400).json({ error: "No text uploaded" });
     }
-    const response = await openAiTTS(text);
+    const response = "";
     if (response) {
       return res.status(200).json({ status: "success", text: response });
     }
