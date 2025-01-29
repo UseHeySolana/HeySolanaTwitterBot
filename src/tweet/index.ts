@@ -1,68 +1,111 @@
 import { Scraper, SearchMode } from "agent-twitter-client";
-import { addTweet, markResponse } from "../db";
-const scraper = new Scraper();
+import { addTweet, fetchCookie, markResponse, saveCookie } from "../db";
 
-const login = async (username: string, password: string) => {
-  const status = await scraper.login(username, password);
-  console.log(status);
-};
+class TwitterBot {
+  private scraper: Scraper;
+  // private username: string;
+  // private password: string;
 
-const checkLogin = async () => {
-  const status = await scraper.isLoggedIn();
-  return status;
-};
-const getMentionTweets = async (tag: string) => {
-  const results = await scraper.fetchSearchTweets(tag, 100, SearchMode.Latest);
+  constructor(private username: string, private password: string) {
+    this.scraper = new Scraper();
+  }
 
-  const response = results.tweets
-    .filter((tweet) =>
-      tweet.mentions.some((mention) => mention.username === tag)
-    )
-    .map((tweet) => ({
-      text: tweet.text as string,
-      user_id: tweet.userId as string,
-      tweetId: tweet.id as string,
-    }));
+  private formatCookies(cookieInput: string[]): string {
+    const jsonArray = cookieInput.map((cookie) =>
+      `${cookie}`.replace("Cookies:=", "")
+    );
+    return JSON.stringify(jsonArray);
+  }
 
-  return response;
-};
+  async login(): Promise<void> {
+    await this.scraper.login(this.username, this.password);
+    await this.getCookies();
+  }
 
-const saveMentionsOnDB = async (tweets: {
-  text: string;
-  user_id: string;
-  tweetId: string;
-}) => {
-  const save = await addTweet(tweets.tweetId, tweets.user_id, tweets.text);
-  return save;
-};
+  async checkLogin(): Promise<boolean> {
+    return await this.scraper.isLoggedIn();
+  }
 
-const respondToMentionsQuote = async (tweetId: string, message: string) => {
-  //Repons
+  private async getCookies(): Promise<boolean> {
+    const cookies = await this.scraper.getCookies();
+    const formattedCookie = this.formatCookies(cookies);
+    return await saveCookie(formattedCookie);
+  }
 
-  // After Responding
-  const response = await markResponse(tweetId);
-  return response;
-};
+  async setCookies(): Promise<boolean> {
+    try {
+      const db = await fetchCookie();
+      if (db) {
+        await this.scraper.setCookies(JSON.parse(db));
+        return true;
+      }
+      return false;
+    } catch (error) {
+      throw new Error(error as string);
+    }
+  }
 
-const respondToMentionDM = async (
-  tweetId: string,
-  message: string,
-  userId: string
-) => {
-  const response = await markResponse(tweetId);
-  return response;
-};
+  async getMentionTweets(
+    tag: string
+  ): Promise<{ text: string; user_id: string; tweetId: string }[]> {
+    const results = await this.scraper.fetchSearchTweets(
+      tag,
+      100,
+      SearchMode.Latest
+    );
 
-const checkDms = async () => {};
+    return results.tweets
+      .filter((tweet) =>
+        tweet.mentions.some(
+          (mention) => mention.username?.toLowerCase() === tag.toLowerCase()
+        )
+      )
+      .map((tweet) => ({
+        text: tweet.text as string,
+        user_id: tweet.userId as string,
+        tweetId: tweet.id as string,
+      }));
+  }
 
-const respondToDMs = async () => {};
+  async saveMentionsOnDB(tweets: {
+    text: string;
+    user_id: string;
+    tweetId: string;
+  }): Promise<boolean> {
+    return await addTweet(tweets.tweetId, tweets.user_id, tweets.text);
+  }
 
-export {
-  login,
-  checkLogin,
-  getMentionTweets,
-  saveMentionsOnDB,
-  respondToMentionsQuote,
-  checkDms,
-  respondToDMs,
-};
+  async respondToMentionsQuote(
+    tweetId: string,
+    message: string
+  ): Promise<boolean> {
+    await markResponse(tweetId);
+    return true;
+  }
+
+  async respondToMentionDM(
+    tweetId: string,
+    message: string,
+    userId: string
+  ): Promise<boolean> {
+    try {
+      console.log(tweetId);
+      await this.scraper.sendTweet(message, tweetId);
+      await markResponse(tweetId);
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  }
+
+  async checkDms(): Promise<void> {
+    // Implementation for checking DMs
+  }
+
+  async respondToDMs(): Promise<void> {
+    // Implementation for responding to DMs
+  }
+}
+
+export default TwitterBot;

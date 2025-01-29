@@ -1,22 +1,37 @@
 import OpenAI from "openai";
-import * as fs from "fs";
-import * as file from "fs/promises";
-import * as path from "path";
-import * as os from "os";
 import { prompA } from "../lib/prompt";
+import { aiTransfer } from "../wallets/ai_functions";
+import { getTokens } from "../wallets/transfers";
 
-const openAiTwitter = async (text: any) => {
+const openAiTwitter = async (text: any, user: any) => {
+  const userDetails = await getTokens(user.wallet_address);
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
   });
 
+  const updatedPrompt =
+    prompA +
+    "" +
+    `this is the list of tokens in the user wallet ${JSON.stringify(
+      userDetails.tokenAccounts,
+      null,
+      2
+    )} ` +
+    `this is the user details ${
+      "Total Balance : " +
+      userDetails.balance +
+      ", Total Balance in USD/Dollars:" +
+      userDetails.totalUsdBalance +
+      ", Sol " +
+      userDetails.solBalance
+    }`;
   const completion = await openai.chat.completions.create({
     model: "gpt-4o",
     temperature: 0.7,
     messages: [
       {
         role: "system",
-        content: prompA,
+        content: updatedPrompt,
       },
       {
         role: "user",
@@ -35,44 +50,13 @@ const openAiTwitter = async (text: any) => {
       );
     try {
       const object = JSON.parse(jsonMatch[0]);
-
-      let actiontext =
-        object.action == "end-stream"
-          ? "Please wait, while I end the conversation"
-          : object.action == "transfer"
-          ? `Please wait while I check for the user ${object.details.recipient}.`
-          : object.action == "check-balance"
-          ? "Please wait, while I check your balance"
-          : "Please Wait! while I complete your request";
-      let actionPlayBack = await convertSpeech(actiontext);
-      await delay(500);
-      const starter = await playText(audioClass, actionPlayBack, false);
-      await delay(500);
-
-      if (!starter) {
-        return "Sorry, I couldn't carry out the transaction.";
-      }
       switch (object.action) {
-        case "end-stream":
-          await delay(1000);
-          audioClass.stopListening();
-          location.reload();
-          break;
         case "transfer":
-          const response = await aiTransfer(audioClass, object);
+          const response = await aiTransfer(object, user);
           return response;
-        case "check-balance": {
-          const keypair = await getKeyPair();
-          if (!keypair) {
-            return "Sorry, I couldn't get your balance. Please try again.";
-          }
-          const response = await aiCheckBalance(keypair, userDetails, object);
-          return response;
-        }
         case "swap":
           const token = object.details.token;
           return "Sorry, I couldn't process your swap. Please try again.";
-
         default:
           return "Unrecognized action.";
       }

@@ -12,13 +12,13 @@ Previous chats are shared with you, use that to help with the conversation flow.
 
  If the user request does not meet these please respond in plain text conversing with the user
 
- if the user says "Hey Solana, for example send 5 SOL to MOSES or any Name..." you are to provide a JSON object containing relevant parameters for the action  something like this:
+ if the user says "Hey Solana, for example send 5 SOL to @YrayPixels or any userName..." you are to provide a JSON object containing relevant parameters for the action  something like this:
  {
              "action": "transfer",
              "details": {
                "amount": 5,
                "token": "SOL",
-               "recipient": "Moses"
+               "reciever": "YrayPixels"
              }
 }.
 
