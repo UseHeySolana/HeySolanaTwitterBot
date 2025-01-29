@@ -37,6 +37,7 @@ class TwitterBot {
     getCookies() {
         return __awaiter(this, void 0, void 0, function* () {
             const cookies = yield this.scraper.getCookies();
+            //@ts-ignore
             const formattedCookie = this.formatCookies(cookies);
             return yield (0, db_1.saveCookie)(formattedCookie);
         });
@@ -82,7 +83,6 @@ class TwitterBot {
     respondToMentionDM(tweetId, message, userId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log(tweetId);
                 yield this.scraper.sendTweet(message, tweetId);
                 yield (0, db_1.markResponse)(tweetId);
                 return true;

@@ -23,6 +23,7 @@
     "@types/express": "^5.0.0",
     "@types/helmet": "^0.0.48",
     "@types/node": "^22.10.10",
+    "@types/tough-cookie": "^4.0.5",
     "nodemon": "^3.1.9",
     "typescript": "^5.7.3"
   }

@@ -28,6 +28,7 @@ class TwitterBot {
 
   private async getCookies(): Promise<boolean> {
     const cookies = await this.scraper.getCookies();
+    //@ts-ignore
     const formattedCookie = this.formatCookies(cookies);
     return await saveCookie(formattedCookie);
   }
@@ -89,7 +90,6 @@ class TwitterBot {
     userId: string
   ): Promise<boolean> {
     try {
-      console.log(tweetId);
       await this.scraper.sendTweet(message, tweetId);
       await markResponse(tweetId);
       return true;
