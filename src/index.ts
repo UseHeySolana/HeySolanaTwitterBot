@@ -50,30 +50,30 @@ app.get("/process-mentions", async (req: any, res: Response) => {
     //Get Tweets
 
     const tweets = await fetchTweets();
-
-    for (const tweet of tweets) {
-      //Process the Tweets in the DB with AI and send Response
-      let user = await fetchUser(tweet.createdby);
-      if (!user) {
-        res.status(500).json({ error: "Failed: No user found " });
+if (tweets.length > 0) {
+  for (const tweet of tweets) {
+    //Process the Tweets in the DB with AI and send Response
+    let user = await fetchUser(tweet.createdby);
+    if (!user) {
+      res.status(500).json({ error: "Failed: No user found " });
+    } else {
+      const response = await openAiTwitter(tweet.text, user);
+      //Update the DB with the response
+      const sendDm = await twit.respondToMentionDM(
+        tweet.tweetid,
+        response,
+        tweet.createdby
+      );
+      if (sendDm) {
+        return res.json({ message: "Tweets Processed and Responded" });
       } else {
-        const response = await openAiTwitter(tweet.text, user);
-        //Update the DB with the response
-
-        const sendDm = await twit.respondToMentionDM(
-          tweet.tweetid,
-          response,
-          tweet.createdby
-        );
-
-        console.log(sendDm);
-        // const updated = await markResponse(tweet.tweetid);
-        // if(updated){
-
-        // }
-        //Save the information in the DB
+        return res.json({ message: "Tweets Processed and Responded" });
       }
     }
+  }
+} else {
+  return res.json({ message: "No Tweets to Process" });
+}
   } catch (e: any) {
     console.error(e);
     res.status(500).json({ error: "Failed: " + e.message });

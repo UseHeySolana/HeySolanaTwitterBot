@@ -1,4 +1,4 @@
-const BASE_URL = "http://127.0.0.1:8000/api";
+const BASE_URL = "https://api.yraytestings.com.ng/api";
 const request = {
   get: async (url: string) => {
     const response = await fetch(BASE_URL + url, {
