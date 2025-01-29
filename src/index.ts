@@ -14,8 +14,10 @@ app.use(cors());
 app.use(express.json());
 
 export const API_KEY = process.env.HELIUS_API;
+const USER_NAME = process.env.USER_NAME || "";
+const PASSWORD = process.env.PASSWORD || "";
 
-const twit = new TwitterBot("heytest_account", "Mosrek8419=");
+const twit = new TwitterBot(USER_NAME, PASSWORD);
 /**
  * Functions to be done
  * 1. Scrape Tweet To Get Mentions
