@@ -59,7 +59,10 @@ const openAiTwitter = async (text: any, user: any) => {
           return response;
         case "rugcheck":
           const details = object.details;
-          const dets = details.type == "minimal" ? await agent.rugCheckMinimal(details.mint) : await agent.rugCheckDetailed(details.mint)
+          const dets =
+            details.type == "minimal"
+              ? await agent.rugCheckMinimal(details.mint, text)
+              : await agent.rugCheckDetailed(details.mint, text);
           return dets;
         case "swap":
           const token = object.details.token;

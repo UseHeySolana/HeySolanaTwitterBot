@@ -14,6 +14,8 @@ app.use(cors());
 app.use(express.json());
 
 export const API_KEY = process.env.HELIUS_API;
+export const GenAI = process.env.GA_KEY;
+console.log(GenAI);
 export const BASE_URL =
   process.env.ENVIRONMENT == "dev"
     ? "http://127.0.0.1:8000/api"
@@ -40,17 +42,14 @@ app.post("/check-for-mentions", async (req: any, res: Response) => {
     const tweets = await twit.getMentionTweets(tag);
     console.log(tweets);
     if (tweets.length > 0) {
-
-    // Save tweets sequentially
-    for (const tweet of tweets) {
-      await twit.saveMentionsOnDB(tweet); // Ensuring sequential execution
-    }
-    return res.json({ message: "Tweets Scraped and Saved" });
+      // Save tweets sequentially
+      for (const tweet of tweets) {
+        await twit.saveMentionsOnDB(tweet); // Ensuring sequential execution
+      }
+      return res.json({ message: "Tweets Scraped and Saved" });
     } else {
       return res.json({ message: "Not Tweets Found!!" });
-
     }
-
   } catch (e: any) {
     console.error(e);
     res.status(500).json({ error: "Failed: " + e.message });
@@ -101,6 +100,14 @@ app.get("/process-mentions", async (req: any, res: Response) => {
   }
 });
 
+app.post("/test-bot", async (req: any, res: Response) => {
+  const { text } = req.body;
 
+  const user = {
+    wallet_address: "13dqNw1su2UTYPVvqP6ahV8oHtghvoe2k2czkrx9uWJZ",
+  };
+  const response = await openAiTwitter(text, user);
+  res.status(200).json({ message: response });
+});
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

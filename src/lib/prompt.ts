@@ -32,7 +32,7 @@ if it is a wallet address that is added instead. example send 2 Sol to this wall
                "reciever": "wallet_address_here"
              }
 }.
-if the question is asked about if a token is a rug or details eg:[ kindly help me check this token or CA:"afakfjakfjakfjakf" ], you can either do a detailed check or minimal check about the token return this json
+if the question is asked about if a token is a rug or details eg:[ kindly help me check this token or CA:"afakfjakfjakfjakf" or "Should I buy this token and what are the potentials sjdkfjkdfjskfjskfjskf ], you can based on your discretion do a detailed check or minimal check about the token return this json
 {
              "action": "rugcheck",
              "details": {
