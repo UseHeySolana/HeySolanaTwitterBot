@@ -1,4 +1,5 @@
-const BASE_URL = "https://api.yraytestings.com.ng/api";
+import { BASE_URL } from "..";
+
 const request = {
   get: async (url: string) => {
     const response = await fetch(BASE_URL + url, {
@@ -14,7 +15,6 @@ const request = {
       method: "POST",
       body: data,
     });
-
     return response;
   },
 };

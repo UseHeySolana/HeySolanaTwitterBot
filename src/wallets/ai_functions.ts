@@ -4,8 +4,12 @@ import { getTokens, transferSol } from "./transfers";
 
 const aiTransfer = async (object: any, user: any) => {
   const details = object.details;
-  const reciever = await fetchUser(details.reciever);
-
+  let reciever = "";
+  if (details.type == "username") {
+    reciever = (await fetchUser(details.reciever)).wallet_address;
+  } else {
+    reciever = details.reciever
+  }
   if (!user) {
     return "Sorry this Sender is not registered with the HeySolana app";
   }
@@ -23,7 +27,7 @@ const aiTransfer = async (object: any, user: any) => {
 
     const transfer = await transferSol(
       user.wallet_address,
-      reciever.wallet_address,
+      reciever,
       details.amount
     );
 

@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from "openai";
 
-const genAI = new GoogleGenerativeAI(process.env.GA_KEY || "");
+const genAI = new GoogleGenerativeAI("");
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 const convertSpeech = async (sentence: any) => {
@@ -13,4 +14,27 @@ const convertSpeech = async (sentence: any) => {
   return result.response.text();
 };
 
-export { convertSpeech };
+const interpret = async (sentence: any, question: string) => {
+  console.log(sentence);
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4o",
+    temperature: 0.7,
+    messages: [
+      {
+        role: "system",
+        content: `""Interprete this response to a meaniful and more sensible sentence, based on what the user asked, this is the users question ${question}.
+        `,
+      },
+      {
+        role: "user",
+        content: ` ${sentence}`,
+      },
+    ],
+  });
+  return completion?.choices[0]?.message?.content;
+};
+
+export { convertSpeech, interpret };

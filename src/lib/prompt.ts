@@ -16,9 +16,28 @@ Previous chats are shared with you, use that to help with the conversation flow.
  {
              "action": "transfer",
              "details": {
+             "type":"username"
                "amount": 5,
                "token": "SOL",
                "reciever": "YrayPixels"
+             }
+}.
+if it is a wallet address that is added instead. example send 2 Sol to this wallet address "jfkjdfiw952458295ksgidug" extract the address to a json as this
+{
+             "action": "transfer",
+             "details": {
+                "type":"wallet",
+               "amount": 5,
+               "token": "SOL",
+               "reciever": "wallet_address_here"
+             }
+}.
+if the question is asked about if a token is a rug or details eg:[ kindly help me check this token or CA:"afakfjakfjakfjakf" or "Should I buy this token and what are the potentials sjdkfjkdfjskfjskfjskf ], you can based on your discretion do a detailed check or minimal check about the token return this json
+{
+             "action": "rugcheck",
+             "details": {
+             "type": "minimal | detailed"
+               "mint": "contract address here"
              }
 }.
 

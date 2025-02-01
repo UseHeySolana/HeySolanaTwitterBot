@@ -58,7 +58,9 @@ class TwitterBot {
     return results.tweets
       .filter((tweet) =>
         tweet.mentions.some(
-          (mention) => mention.username?.toLowerCase() === tag.toLowerCase()
+          (mention) =>
+            mention.username?.toLowerCase() === tag.toLowerCase() &&
+            tweet.text?.toLowerCase().includes(tag.toLowerCase())
         )
       )
       .map((tweet) => ({
@@ -99,12 +101,37 @@ class TwitterBot {
     }
   }
 
-  async checkDms(): Promise<void> {
+  async checkDms(userId: string): Promise<void> {
     // Implementation for checking DMs
+    try {
+      const messages = await this.scraper.getDirectMessageConversations(userId);
+      // const messages = await this.scraper.sendDirectMessage(
+      // "testing direct dm",
+      // ""
+      // );
+
+      console.log(messages);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
-  async respondToDMs(): Promise<void> {
+  async respondToDMs(message: string, userId: string): Promise<boolean> {
+    const sendDm = await this.scraper.sendDirectMessage(message, userId);
+    console.log(sendDm);
+    return true;
     // Implementation for responding to DMs
+  }
+
+  async getUser(username: string): Promise<string | boolean> {
+    try {
+      const userId = await this.scraper.getProfile(username);
+      if (!userId.userId) return false;
+      return userId.userId;
+    } catch (e: any) {
+      console.log(e.message)
+      return false
+    }
   }
 }
 

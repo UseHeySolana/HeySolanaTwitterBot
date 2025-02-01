@@ -61,7 +61,11 @@ class TwitterBot {
         return __awaiter(this, void 0, void 0, function* () {
             const results = yield this.scraper.fetchSearchTweets(tag, 100, agent_twitter_client_1.SearchMode.Latest);
             return results.tweets
-                .filter((tweet) => tweet.mentions.some((mention) => { var _a; return ((_a = mention.username) === null || _a === void 0 ? void 0 : _a.toLowerCase()) === tag.toLowerCase(); }))
+                .filter((tweet) => tweet.mentions.some((mention) => {
+                var _a, _b;
+                return ((_a = mention.username) === null || _a === void 0 ? void 0 : _a.toLowerCase()) === tag.toLowerCase() &&
+                    ((_b = tweet.text) === null || _b === void 0 ? void 0 : _b.toLowerCase().includes(tag.toLowerCase()));
+            }))
                 .map((tweet) => ({
                 text: tweet.text,
                 user_id: tweet.userId,
@@ -93,14 +97,42 @@ class TwitterBot {
             }
         });
     }
-    checkDms() {
+    checkDms(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             // Implementation for checking DMs
+            try {
+                const messages = yield this.scraper.getDirectMessageConversations(userId);
+                // const messages = await this.scraper.sendDirectMessage(
+                // "testing direct dm",
+                // ""
+                // );
+                console.log(messages);
+            }
+            catch (e) {
+                console.error(e);
+            }
         });
     }
-    respondToDMs() {
+    respondToDMs(message, userId) {
         return __awaiter(this, void 0, void 0, function* () {
+            const sendDm = yield this.scraper.sendDirectMessage(message, userId);
+            console.log(sendDm);
+            return true;
             // Implementation for responding to DMs
+        });
+    }
+    getUser(username) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const userId = yield this.scraper.getProfile(username);
+                if (!userId.userId)
+                    return false;
+                return userId.userId;
+            }
+            catch (e) {
+                console.log(e.message);
+                return false;
+            }
         });
     }
 }
