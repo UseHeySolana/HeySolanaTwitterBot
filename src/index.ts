@@ -14,8 +14,6 @@ app.use(cors());
 app.use(express.json());
 
 export const API_KEY = process.env.HELIUS_API;
-export const GenAI = process.env.GA_KEY;
-console.log(GenAI);
 export const BASE_URL =
   process.env.ENVIRONMENT == "dev"
     ? "http://127.0.0.1:8000/api"
@@ -109,5 +107,13 @@ app.post("/test-bot", async (req: any, res: Response) => {
   const response = await openAiTwitter(text, user);
   res.status(200).json({ message: response });
 });
+
+app.post("/fetch-user", async (req: any, res: Response) => {
+  const { username } = req.body;
+  if (!username) return res.status(400).json({ "message": "No username added!" })
+  const userId = await twit.getUser(username);
+  res.status(200).json({ "userId": userId });
+});
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

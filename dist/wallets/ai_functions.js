@@ -16,7 +16,13 @@ const transfers_1 = require("./transfers");
 const aiTransfer = (object, user) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const details = object.details;
-    const reciever = yield (0, db_1.fetchUser)(details.reciever);
+    let reciever = "";
+    if (details.type == "username") {
+        reciever = (yield (0, db_1.fetchUser)(details.reciever)).wallet_address;
+    }
+    else {
+        reciever = details.reciever;
+    }
     if (!user) {
         return "Sorry this Sender is not registered with the HeySolana app";
     }
@@ -29,7 +35,7 @@ const aiTransfer = (object, user) => __awaiter(void 0, void 0, void 0, function*
         if (Number((_a = userTokens.solBalance) === null || _a === void 0 ? void 0 : _a.toFixed(2)) < Number(details.amount)) {
             return "You do not have sufficient SOL to perform this transaction!";
         }
-        const transfer = yield (0, transfers_1.transferSol)(user.wallet_address, reciever.wallet_address, details.amount);
+        const transfer = yield (0, transfers_1.transferSol)(user.wallet_address, reciever, details.amount);
         return `https://www.twitbot.useheysolana.com/?tx=${transfer}`;
         // const transferRes = await convertSpeech(
         //   `You have transferred ${details.amount} SOL to ${details.reciever} Successfully`

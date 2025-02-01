@@ -10,17 +10,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.fetchTweets = exports.fetchCookie = exports.saveCookie = exports.fetchUser = exports.markResponse = exports.addTweet = void 0;
-const BASE_URL = "http://127.0.0.1:8000/api";
+const __1 = require("..");
 const request = {
     get: (url) => __awaiter(void 0, void 0, void 0, function* () {
-        const response = yield fetch(BASE_URL + url, {
+        const response = yield fetch(__1.BASE_URL + url, {
             method: "GET",
         });
         return response;
     }),
     post: (data, url) => __awaiter(void 0, void 0, void 0, function* () {
         // Upload to your API endpoint
-        const response = yield fetch(BASE_URL + url, {
+        const response = yield fetch(__1.BASE_URL + url, {
             method: "POST",
             body: data,
         });

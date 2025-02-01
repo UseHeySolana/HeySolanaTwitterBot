@@ -1,8 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { GenAI } from "..";
 import OpenAI from "openai";
 
-const genAI = new GoogleGenerativeAI(GenAI || "");
+const genAI = new GoogleGenerativeAI("");
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 const convertSpeech = async (sentence: any) => {

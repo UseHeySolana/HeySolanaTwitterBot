@@ -122,6 +122,17 @@ class TwitterBot {
     return true;
     // Implementation for responding to DMs
   }
+
+  async getUser(username: string): Promise<string | boolean> {
+    try {
+      const userId = await this.scraper.getProfile(username);
+      if (!userId.userId) return false;
+      return userId.userId;
+    } catch (e: any) {
+      console.log(e.message)
+      return false
+    }
+  }
 }
 
 export default TwitterBot;

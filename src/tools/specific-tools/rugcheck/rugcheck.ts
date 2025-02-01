@@ -1,4 +1,14 @@
-import { TokenCheck } from "../../types";
+export interface TokenCheck {
+  tokenProgram: string;
+  tokenType: string;
+  risks: Array<{
+    name: string;
+    level: string;
+    description: string;
+    score: number;
+  }>;
+  score: number;
+}
 
 const BASE_URL = "https://api.rugcheck.xyz/v1";
 
