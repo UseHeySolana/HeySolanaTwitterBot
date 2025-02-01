@@ -41,7 +41,6 @@ const openAiTwitter = async (text: any, user: any) => {
       },
     ],
   });
-  console.log(completion?.choices[0]?.message?.content);
   const jsonMatch =
     completion?.choices[0]?.message?.content?.match(/\{[\s\S]*\}/) || null;
 

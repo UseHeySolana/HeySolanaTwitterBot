@@ -38,7 +38,6 @@ app.post("/check-for-mentions", async (req: any, res: Response) => {
     }
     // Get Tweets
     const tweets = await twit.getMentionTweets(tag);
-    console.log(tweets);
     if (tweets.length > 0) {
       // Save tweets sequentially
       for (const tweet of tweets) {
@@ -69,9 +68,9 @@ app.get("/get-dms", async (req: any, res: Response) => {
 app.get("/process-mentions", async (req: any, res: Response) => {
   try {
     //Get Tweets
-
     const tweets = await fetchTweets();
 
+    if (tweets.length > 0) {
     for (const tweet of tweets as any) {
       //Process the Tweets in the DB with AI and send Response
       let user = await fetchUser(tweet.createdby);
@@ -91,6 +90,9 @@ app.get("/process-mentions", async (req: any, res: Response) => {
           return res.json({ message: "Tweets Processed and Responded" });
         }
       }
+      }
+    } else {
+      return res.json({ message: "No tweets to process" });
     }
   } catch (e: any) {
     console.error(e);
