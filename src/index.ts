@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { fetchTweets, fetchUser } from "./db";
-import { openAiTwitter } from "./requests/openai";
 import TwitterBot from "./tweet/index";
+import AgentKit from "./agentKit";
 
 const express = require("express");
 const dotenv = require("dotenv");
@@ -13,6 +13,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+export const OPEN_AI = process.env.OPENAI_API_KEY;
 export const API_KEY = process.env.HELIUS_API;
 export const BASE_URL =
   process.env.ENVIRONMENT == "dev"
@@ -77,7 +78,12 @@ app.get("/process-mentions", async (req: any, res: Response) => {
       if (!user) {
         res.status(200).json({ error: "Failed: No user found " });
       } else {
-        const response = await openAiTwitter(tweet.text, user);
+        const agent = new AgentKit();
+        const executor = await agent.setupAgent();
+        const response = await agent.runAgent(
+          executor,
+          tweet.text + JSON.stringify(user)
+        );
         //Update the DB with the response
         const sendDm = await twit.respondToMentionDM(
           tweet.tweetid,
@@ -102,12 +108,26 @@ app.get("/process-mentions", async (req: any, res: Response) => {
 
 app.post("/test-bot", async (req: any, res: Response) => {
   const { text } = req.body;
+  const tweet = {
+    text: text,
+    createdby: "885980641992601601",
+    tweetId: "1885381871560724621"
+  }
+  let user = await fetchUser(tweet.createdby);
+  const agent = new AgentKit();
+  const executor = await agent.setupAgent();
+  try {
 
-  const user = {
-    wallet_address: "13dqNw1su2UTYPVvqP6ahV8oHtghvoe2k2czkrx9uWJZ",
-  };
-  const response = await openAiTwitter(text, user);
-  res.status(200).json({ message: response });
+    const checkRug = await agent.runAgent(
+      executor,
+      text + JSON.stringify(user)
+    );
+    res.status(200).json({ "answer": checkRug });
+
+  } catch (error) {
+    res.status(500).json({ "Failed": error });
+
+  }
 });
 
 app.post("/fetch-user", async (req: any, res: Response) => {
