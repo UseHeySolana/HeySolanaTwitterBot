@@ -101,7 +101,45 @@ const fetchTweets = async () => {
     return false;
   }
 };
+
+//Transactions
+
+const getTx = async (id: string) => {
+  try {
+    const response = await request.get(`/get-tx/${id}`);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching data: ", error);
+    return false;
+  }
+};
+const addTx = async (
+  blockhash: string,
+  serialized: string,
+  lastblockheight: string,
+  unique_id: string,
+
+): Promise<boolean> => {
+  try {
+    const formData = new FormData();
+    formData.append("blockhash", blockhash);
+    formData.append("serialized", serialized);
+    formData.append("ladtblockheight", lastblockheight);
+    formData.append('unique_id', unique_id);
+
+    const response = await request.post(formData, "/add-tx");
+    const data = await response.json();
+    return true;
+  } catch (error) {
+    console.log("Error adding document ", error);
+    return false;
+  }
+};
+
 export {
+  addTx,
+  getTx,
   addTweet,
   markResponse,
   fetchUser,

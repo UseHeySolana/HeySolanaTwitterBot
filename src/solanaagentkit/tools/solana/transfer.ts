@@ -6,6 +6,7 @@ import {
   createTransferInstruction,
   getMint,
 } from "@solana/spl-token";
+import { addTx } from "../../../db";
 
 /**
  * Transfer SOL or SPL tokens to a recipient
@@ -22,11 +23,9 @@ export async function transfer(
   mint?: PublicKey,
 ): Promise<string> {
   try {
-    let tx: string;
-
     if (!mint) {
       // Transfer native SOL
-      const transaction = new Transaction().add(
+      const tx = new Transaction().add(
         SystemProgram.transfer({
           fromPubkey: agent.wallet_address,
           toPubkey: to,
@@ -34,7 +33,16 @@ export async function transfer(
         }),
       );
 
-      tx = await agent.connection.sendTransaction(transaction, [agent.wallet]);
+
+      tx.feePayer = new PublicKey(agent.wallet_address);
+      const { blockhash } = await agent.connection.getLatestBlockhash();
+      tx.recentBlockhash = blockhash;
+
+      // Send this incomplete transaction to the frontend
+      const serializedTx = tx.serialize({
+        requireAllSignatures: false, // Important for incomplete transactions
+      });
+      return Buffer.from(serializedTx).toString("base64")
     } else {
       // Transfer SPL token
       const fromAta = await getAssociatedTokenAddress(
@@ -47,7 +55,7 @@ export async function transfer(
       const mintInfo = await getMint(agent.connection, mint);
       const adjustedAmount = amount * Math.pow(10, mintInfo.decimals);
 
-      const transaction = new Transaction().add(
+      const tx = new Transaction().add(
         createTransferInstruction(
           fromAta,
           toAta,
@@ -55,11 +63,18 @@ export async function transfer(
           adjustedAmount,
         ),
       );
-
-      tx = await agent.connection.sendTransaction(transaction, [agent.wallet]);
+      tx.feePayer = new PublicKey(agent.wallet_address);
+      const { blockhash, lastValidBlockHeight } = await agent.connection.getLatestBlockhash();
+      tx.recentBlockhash = blockhash;
+      // Send this incomplete transaction to the frontend
+      const serializedTx = tx.serialize({
+        requireAllSignatures: false, // Important for incomplete transactions
+      });
+      let serializedString = Buffer.from(serializedTx).toString("base64")
+      const unique_id = new Date().getTime();
+      const txSave = await addTx(blockhash, serializedString, lastValidBlockHeight.toString(), unique_id.toString())
+      return unique_id.toString();
     }
-
-    return tx;
   } catch (error: any) {
     throw new Error(`Transfer failed: ${error.message}`);
   }

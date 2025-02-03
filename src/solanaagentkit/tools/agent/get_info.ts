@@ -10,13 +10,13 @@ import { ChatCompletionMessageParam } from "openai/resources";
  */
 export async function get_info(agent: SolanaAgentKit, prompt: string) {
   try {
-    if (!agent.config.PERPLEXITY_API_KEY) {
+    if (!agent.config.OPENAI_API_KEY) {
       throw new Error("Perplexity API key not found in agent configuration");
     }
 
     const perplexity = new OpenAI({
-      apiKey: agent.config.PERPLEXITY_API_KEY,
-      baseURL: "https://api.perplexity.ai",
+      apiKey: agent.config.OPENAI_API_KEY,
+      // baseURL: "https://api.perplexity.ai",
     });
 
     const messages: ChatCompletionMessageParam[] = [
@@ -33,7 +33,7 @@ export async function get_info(agent: SolanaAgentKit, prompt: string) {
     ];
 
     const response = await perplexity.chat.completions.create({
-      model: "llama-3.1-sonar-large-128k-online",
+      model: "gpt-4o",
       messages,
     });
 

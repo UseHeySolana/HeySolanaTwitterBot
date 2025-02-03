@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 import { fetchTweets, fetchUser } from "./db";
 import TwitterBot from "./tweet/index";
-import AgentKit from "./agentKit";
+import { SolanaAgentKit } from "./solanaagentkit";
+import AgentKit from "./modifiedlang/agentkit";
+import { fetchTokenDetailedReport, getTokenDataByTicker } from "./solanaagentkit/tools";
 
 const express = require("express");
 const dotenv = require("dotenv");
@@ -13,14 +15,16 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-export const OPEN_AI = process.env.OPENAI_API_KEY;
+const env = process.env.ENVIRONMENT;
+export const OPEN_AI = process.env.OPENAI_API_KEY || "";
 export const API_KEY = process.env.HELIUS_API;
 export const BASE_URL =
-  process.env.ENVIRONMENT == "dev"
+  env == "env"
     ? "http://127.0.0.1:8000/api"
     : "https://api.yraytestings.com.ng/api";
 const USER_NAME = process.env.USER_NAME || "";
 const PASSWORD = process.env.PASSWORD || "";
+const Helius = env == "dev" ? "https://devnet.helius-rpc.com/?api-key=" + process.env.HELIUS_API || "" : "https://mainnet.helius-rpc.com/?api-key=" + process.env.HELIUS_API || ""
 
 const twit = new TwitterBot(USER_NAME, PASSWORD);
 /**
@@ -78,12 +82,8 @@ app.get("/process-mentions", async (req: any, res: Response) => {
       if (!user) {
         res.status(200).json({ error: "Failed: No user found " });
       } else {
-        const agent = new AgentKit();
-        const executor = await agent.setupAgent();
-        const response = await agent.runAgent(
-          executor,
-          tweet.text + JSON.stringify(user)
-        );
+        const response = ""
+
         //Update the DB with the response
         const sendDm = await twit.respondToMentionDM(
           tweet.tweetid,
@@ -114,15 +114,29 @@ app.post("/test-bot", async (req: any, res: Response) => {
     tweetId: "1885381871560724621"
   }
   let user = await fetchUser(tweet.createdby);
-  const agent = new AgentKit();
+  console.log(user);
+  const agent = new AgentKit(OPEN_AI, Helius, user.wallet_address);
   const executor = await agent.setupAgent();
   try {
-
     const checkRug = await agent.runAgent(
       executor,
-      text + JSON.stringify(user)
+      text
     );
     res.status(200).json({ "answer": checkRug });
+
+  } catch (error) {
+    res.status(500).json({ "Failed": error });
+
+  }
+});
+
+app.get("/test-functions", async (req: any, res: Response) => {
+
+
+
+  try {
+    const response = await getTokenDataByTicker("SOLYAI")
+    res.status(200).json({ "answer": response });
 
   } catch (error) {
     res.status(500).json({ "Failed": error });

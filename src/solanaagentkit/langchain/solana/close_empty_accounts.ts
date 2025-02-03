@@ -16,7 +16,8 @@ export class SolanaCloseEmptyTokenAccounts extends Tool {
 
       return JSON.stringify({
         status: "success",
-        message: `${size} accounts closed successfully. ${size === 48 ? "48 accounts can be closed in a single transaction try again to close more accounts" : ""}`,
+        message: `Kindly click this link to close the accounts. the ${size} of accounts to be closed. ${size === 48 ? "48 accounts can be closed in a single transaction try again to close more accounts" : ""}`,
+        link: `https://agentx.useheysolana.com/sign?tx=${signature}`,
         signature,
       });
     } catch (error: any) {

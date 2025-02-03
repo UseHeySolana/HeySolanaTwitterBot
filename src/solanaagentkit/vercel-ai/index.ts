@@ -12,7 +12,7 @@ export function createSolanaTools(
   for (const key of actionKeys) {
     const action = ACTIONS[key as keyof typeof ACTIONS];
     tools[key] = tool({
-      // @ts-expect-error Value matches type however TS still shows error
+      // @ts-expect-error
       id: action.name,
       description: `
       ${action.description}
@@ -24,7 +24,7 @@ export function createSolanaTools(
       )}
       `.slice(0, 1023),
       parameters: action.schema,
-      execute: async (params) =>
+      execute: async (params: any) =>
         await executeAction(action, solanaAgentKit, params),
     });
   }

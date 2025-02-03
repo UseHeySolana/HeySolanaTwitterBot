@@ -5,7 +5,7 @@ import { get_info } from "../../tools/agent";
 export class SolanaGetInfoTool extends Tool {
   name = "solana_get_info";
   description =
-    "Get detailed and latest information about any topic using Perplexity AI. Input should be a question or topic to get information about.";
+    "Get detailed and latest information about any topic using Open AI. Input should be a question or topic to get information about.";
 
   constructor(private solanaKit: SolanaAgentKit) {
     super();

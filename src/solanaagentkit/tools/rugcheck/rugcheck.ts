@@ -39,6 +39,7 @@ export async function fetchTokenDetailedReport(
 ): Promise<TokenCheck> {
   try {
     const response = await fetch(`${BASE_URL}/tokens/${mint}/report`);
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }

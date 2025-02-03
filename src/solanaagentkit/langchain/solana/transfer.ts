@@ -30,13 +30,14 @@ export class SolanaTransferTool extends Tool {
         mintAddress,
       );
 
+
       return JSON.stringify({
         status: "success",
-        message: "Transfer completed successfully",
+        message: "Kindly click this link to sign the transaction",
+        link: `https://agentx.useheysolana.com/sign?tx=${tx}`,
         amount: parsedInput.amount,
         recipient: parsedInput.to,
         token: parsedInput.mint || "SOL",
-        transaction: tx,
       });
     } catch (error: any) {
       return JSON.stringify({

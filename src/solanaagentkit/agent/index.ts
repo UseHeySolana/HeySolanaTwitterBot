@@ -1,7 +1,7 @@
 import { Connection, Keypair, PublicKey } from "@solana/web3.js";
-import { BN } from "@coral-xyz/anchor";
+// import { BN } from "@coral-xyz/anchor";
 import bs58 from "bs58";
-import Decimal from "decimal.js";
+// import Decimal from "decimal.js";
 import {
   CreateCollectionOptions,
   CreateSingleOptions,
@@ -9,119 +9,117 @@ import {
 } from "@3land/listings-sdk/dist/types/implementation/implementationTypes";
 import { DEFAULT_OPTIONS } from "../constants";
 import {
-  deploy_collection,
-  deploy_token,
   get_balance,
   get_balance_other,
   getTPS,
-  resolveSolDomain,
-  getPrimaryDomain,
-  launchPumpFunToken,
-  lendAsset,
-  luloLend,
-  luloWithdraw,
-  mintCollectionNFT,
-  openbookCreateMarket,
-  manifestCreateMarket,
-  raydiumCreateAmmV4,
-  raydiumCreateClmm,
-  raydiumCreateCpmm,
-  registerDomain,
+  // resolveSolDomain,
+  // getPrimaryDomain,
+  // launchPumpFunToken,
+  // lendAsset,
+  // luloLend,
+  // luloWithdraw,
+  // mintCollectionNFT,
+  // openbookCreateMarket,
+  // manifestCreateMarket,
+  // raydiumCreateAmmV4,
+  // raydiumCreateClmm,
+  // raydiumCreateCpmm,
+  // registerDomain,
   request_faucet_funds,
-  trade,
-  limitOrder,
-  batchOrder,
-  cancelAllOrders,
-  withdrawAll,
-  closePerpTradeShort,
-  closePerpTradeLong,
-  openPerpTradeShort,
-  openPerpTradeLong,
+  // trade,
+  // limitOrder,
+  // batchOrder,
+  // cancelAllOrders,
+  // withdrawAll,
+  // closePerpTradeShort,
+  // closePerpTradeLong,
+  // openPerpTradeShort,
+  // openPerpTradeLong,
   transfer,
   getTokenDataByAddress,
   getTokenDataByTicker,
-  stakeWithJup,
-  stakeWithSolayer,
-  sendCompressedAirdrop,
-  orcaCreateSingleSidedLiquidityPool,
-  orcaCreateCLMM,
-  orcaOpenCenteredPositionWithLiquidity,
-  orcaOpenSingleSidedPosition,
-  FEE_TIERS,
-  fetchPrice,
-  getAllDomainsTLDs,
-  getAllRegisteredAllDomains,
-  getOwnedDomainsForTLD,
-  getMainAllDomainsDomain,
-  getOwnedAllDomains,
-  resolveAllDomains,
-  create_gibwork_task,
-  orcaClosePosition,
-  orcaFetchPositions,
-  rock_paper_scissor,
-  create_TipLink,
-  listNFTForSale,
-  cancelListing,
+  // stakeWithJup,
+  // stakeWithSolayer,
+  // sendCompressedAirdrop,
+  // orcaCreateSingleSidedLiquidityPool,
+  // orcaCreateCLMM,
+  // orcaOpenCenteredPositionWithLiquidity,
+  // orcaOpenSingleSidedPosition,
+  // FEE_TIERS,
+  // fetchPrice,
+  // getAllDomainsTLDs,
+  // getAllRegisteredAllDomains,
+  // getOwnedDomainsForTLD,
+  // getMainAllDomainsDomain,
+  // getOwnedAllDomains,
+  // resolveAllDomains,
+  // create_gibwork_task,
+  // orcaClosePosition,
+  // orcaFetchPositions,
+  // rock_paper_scissor,
+  // create_TipLink,
+  // listNFTForSale,
+  // cancelListing,
   closeEmptyTokenAccounts,
   fetchTokenReportSummary,
   fetchTokenDetailedReport,
-  fetchPythPrice,
-  fetchPythPriceFeedID,
-  flashOpenTrade,
-  flashCloseTrade,
-  createMeteoraDynamicAMMPool,
-  createMeteoraDlmmPool,
-  createCollection,
-  createSingle,
-  multisig_transfer_from_treasury,
-  create_squads_multisig,
-  multisig_create_proposal,
-  multisig_deposit_to_treasury,
-  multisig_reject_proposal,
-  multisig_approve_proposal,
-  multisig_execute_proposal,
-  parseTransaction,
-  sendTransactionWithPriorityFee,
-  getAssetsByOwner,
-  getHeliusWebhook,
-  create_HeliusWebhook,
-  deleteHeliusWebhook,
-  createDriftUserAccount,
-  createVault,
-  depositIntoVault,
-  depositToDriftUserAccount,
-  getVaultAddress,
-  doesUserHaveDriftAccount,
-  driftUserAccountInfo,
-  requestWithdrawalFromVault,
-  tradeDriftVault,
-  driftPerpTrade,
-  updateVault,
-  getVaultInfo,
-  withdrawFromDriftUserAccount,
-  withdrawFromDriftVault,
-  updateVaultDelegate,
+  // fetchPythPrice,
+  // fetchPythPriceFeedID,
+  // flashOpenTrade,
+  // flashCloseTrade,
+  // createMeteoraDynamicAMMPool,
+  // createMeteoraDlmmPool,
+  // createCollection,
+  // createSingle,
+  // multisig_transfer_from_treasury,
+  // create_squads_multisig,
+  // multisig_create_proposal,
+  // multisig_deposit_to_treasury,
+  // multisig_reject_proposal,
+  // multisig_approve_proposal,
+  // multisig_execute_proposal,
+  // parseTransaction,
+  // sendTransactionWithPriorityFee,
+  // getAssetsByOwner,
+  // getHeliusWebhook,
+  // create_HeliusWebhook,
+  // deleteHeliusWebhook,
+  // createDriftUserAccount,
+  // createVault,
+  // depositIntoVault,
+  // depositToDriftUserAccount,
+  // getVaultAddress,
+  // doesUserHaveDriftAccount,
+  // driftUserAccountInfo,
+  // requestWithdrawalFromVault,
+  // tradeDriftVault,
+  // driftPerpTrade,
+  // updateVault,
+  // getVaultInfo,
+  // withdrawFromDriftUserAccount,
+  // withdrawFromDriftVault,
+  // updateVaultDelegate,
   get_token_balance,
-  getAvailableDriftSpotMarkets,
-  getAvailableDriftPerpMarkets,
-  stakeToDriftInsuranceFund,
-  requestUnstakeFromDriftInsuranceFund,
-  unstakeFromDriftInsuranceFund,
-  swapSpotToken,
-  calculatePerpMarketFundingRate,
-  getEntryQuoteOfPerpTrade,
-  getLendingAndBorrowAPY,
-  voltrGetPositionValues,
-  voltrDepositStrategy,
-  voltrWithdrawStrategy,
-  get_asset,
-  get_assets_by_authority,
-  get_assets_by_creator,
-  simulate_switchboard_feed,
-  swap,
-  getPriceInference,
-  getAllTopics,
-  getInferenceByTopicId,
+  // getAvailableDriftSpotMarkets,
+  // getAvailableDriftPerpMarkets,
+  // stakeToDriftInsuranceFund,
+  // requestUnstakeFromDriftInsuranceFund,
+  // unstakeFromDriftInsuranceFund,
+  // swapSpotToken,
+  // calculatePerpMarketFundingRate,
+  // getEntryQuoteOfPerpTrade,
+  // getLendingAndBorrowAPY,
+  // voltrGetPositionValues,
+  // voltrDepositStrategy,
+  // voltrWithdrawStrategy,
+  // get_asset,
+  // get_assets_by_authority,
+  // get_assets_by_creator,
+  // simulate_switchboard_feed,
+  // swap,
+  // getPriceInference,
+  // getAllTopics,
+  // getInferenceByTopicId,
 } from "../tools";
 import {
   Config,
@@ -160,7 +158,6 @@ import { AlloraInference, AlloraTopic } from "@alloralabs/allora-sdk";
  */
 export class SolanaAgentKit {
   public connection: Connection;
-  public wallet: Keypair;
   public wallet_address: PublicKey;
   public config: Config;
 
@@ -173,21 +170,20 @@ export class SolanaAgentKit {
    * });
    */
   constructor(
-    private_key: string,
+    wallet_address: string,
     rpc_url: string,
     openai_api_key: string | null,
   );
-  constructor(private_key: string, rpc_url: string, config: Config);
+  constructor(wallet_address: string, rpc_url: string, config: Config);
   constructor(
-    private_key: string,
+    wallet_address: string,
     rpc_url: string,
     configOrKey: Config | string | null,
   ) {
     this.connection = new Connection(
       rpc_url || "https://api.mainnet-beta.solana.com",
     );
-    this.wallet = Keypair.fromSecretKey(bs58.decode(private_key));
-    this.wallet_address = this.wallet.publicKey;
+    this.wallet_address = this.pubkey(wallet_address);
 
     // Handle both old and new patterns
     if (typeof configOrKey === "string" || configOrKey === null) {
@@ -196,64 +192,12 @@ export class SolanaAgentKit {
       this.config = configOrKey;
     }
   }
-  //TODO::not done
-  // Tool methods 
-  async requestFaucetFunds() {
-    return request_faucet_funds(this);
+
+  private pubkey(address: string) {
+    const pubkey = new PublicKey(address)
+    return pubkey;
   }
 
-  //TODO::not done
-  async deployToken(
-    name: string,
-    uri: string,
-    symbol: string,
-    decimals: number = DEFAULT_OPTIONS.TOKEN_DECIMALS,
-    initialSupply?: number,
-  ): Promise<{ mint: PublicKey }> {
-    return deploy_token(this, name, uri, symbol, decimals, initialSupply);
-  }
-  //TODO::not done
-  async deployCollection(
-    options: CollectionOptions,
-  ): Promise<CollectionDeployment> {
-    return deploy_collection(this, options);
-  }
-
-  //TODO::not done
-  async getBalance(token_address?: PublicKey): Promise<number> {
-    return get_balance(this, token_address);
-  }
-
-  //TODO::not done
-  async getTokenBalances(wallet_address?: PublicKey): Promise<{
-    sol: number;
-    tokens: Array<{
-      tokenAddress: string;
-      name: string;
-      symbol: string;
-      balance: number;
-      decimals: number;
-    }>;
-  }> {
-    return get_token_balance(this, wallet_address);
-  }
-
-  //TODO::not done
-  async getBalanceOther(
-    walletAddress: PublicKey,
-    tokenAddress?: PublicKey,
-  ): Promise<number> {
-    return get_balance_other(this, walletAddress, tokenAddress);
-  }
-
-  //TODO::not done
-  async transfer(
-    to: PublicKey,
-    amount: number,
-    mint?: PublicKey,
-  ): Promise<string> {
-    return transfer(this, to, amount, mint);
-  }
 
   // async mintNFT(
   //   collectionMint: PublicKey,
@@ -356,27 +300,13 @@ export class SolanaAgentKit {
   //   return luloWithdraw(this, mintAddress, amount);
   // }
 
-  // async getTPS(): Promise<number> {
-  //   return getTPS(this);
+
+
+  // //TODO:: not done
+  // async fetchTokenPrice(mint: string) {
+  //   return fetchPrice(new PublicKey(mint));
   // }
-  //TODO:: not done
-  async getTokenDataByAddress(
-    mint: string,
-  ): Promise<JupiterTokenData | undefined> {
-    return getTokenDataByAddress(new PublicKey(mint));
-  }
-  //TODO:: not done
-  async getTokenDataByTicker(
-    ticker: string,
-  ): Promise<JupiterTokenData | undefined> {
-    return getTokenDataByTicker(ticker);
-  }
-
-  //TODO:: not done
-  async fetchTokenPrice(mint: string) {
-    return fetchPrice(new PublicKey(mint));
-  }
-
+  // //TODO:: not done
   // async launchPumpFunToken(
   //   tokenName: string,
   //   tokenTicker: string,
@@ -688,20 +618,6 @@ export class SolanaAgentKit {
   //   return cancelListing(this, nftMint);
   // }
 
-  // async closeEmptyTokenAccounts(): Promise<{
-  //   signature: string;
-  //   size: number;
-  // }> {
-  //   return closeEmptyTokenAccounts(this);
-  // }
-
-  // async fetchTokenReportSummary(mint: string): Promise<TokenCheck> {
-  //   return fetchTokenReportSummary(mint);
-  // }
-
-  // async fetchTokenDetailedReport(mint: string): Promise<TokenCheck> {
-  //   return fetchTokenDetailedReport(mint);
-  // }
 
   // /**
   //  * Opens a new trading position on Flash.Trade
@@ -1082,4 +998,66 @@ export class SolanaAgentKit {
   // ): Promise<string> {
   //   return simulate_switchboard_feed(this, feed, crossbarUrl);
   // }
+
+
+  // Tool methods 
+  async requestFaucetFunds() {
+    return request_faucet_funds(this);
+  }
+  async getBalance(token_address?: PublicKey): Promise<number> {
+    return get_balance(this, token_address);
+  }
+  async getTokenBalances(wallet_address?: PublicKey): Promise<{
+    sol: number;
+    tokens: Array<{
+      tokenAddress: string;
+      name: string;
+      symbol: string;
+      balance: number;
+      decimals: number;
+    }>;
+  }> {
+    return get_token_balance(this, wallet_address);
+  }
+  async getBalanceOther(
+    walletAddress: PublicKey,
+    tokenAddress?: PublicKey,
+  ): Promise<number> {
+    return get_balance_other(this, walletAddress, tokenAddress);
+  }
+  async transfer(
+    to: PublicKey,
+    amount: number,
+    mint?: PublicKey,
+  ): Promise<string> {
+    return transfer(this, to, amount, mint);
+  }
+
+  async closeEmptyTokenAccounts(): Promise<{
+    signature: string;
+    size: number;
+  }> {
+    return closeEmptyTokenAccounts(this);
+  }
+  async fetchTokenReportSummary(mint: string): Promise<TokenCheck> {
+    return fetchTokenReportSummary(mint);
+  }
+  async fetchTokenDetailedReport(mint: string): Promise<TokenCheck> {
+    return fetchTokenDetailedReport(mint);
+  }
+  async getTPS(): Promise<number> {
+    return getTPS(this);
+  }
+
+  async getTokenDataByAddress(
+    mint: string,
+  ): Promise<JupiterTokenData | undefined> {
+    return getTokenDataByAddress(new PublicKey(mint));
+  }
+
+  async getTokenDataByTicker(
+    ticker: string,
+  ): Promise<JupiterTokenData | undefined> {
+    return getTokenDataByTicker(ticker);
+  }
 }
