@@ -13,9 +13,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const env = process.env.ENVIRONMENT;
+export const COOKIE_BASE = "https://api.cookie.fun/v2/agents";
 export const API_KEY = process.env.HELIUS_API;
+export const COOKIE_KEY = process.env.COOKIE_API || "";
 export const BASE_URL =
-  process.env.ENVIRONMENT == "dev"
+  env == "dev"
     ? "http://127.0.0.1:8000/api"
     : "https://api.yraytestings.com.ng/api";
 const USER_NAME = process.env.USER_NAME || "";
