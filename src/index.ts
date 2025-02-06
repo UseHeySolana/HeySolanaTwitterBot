@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { fetchTweets, fetchUser } from "./db";
+import { addTx, fetchTweets, fetchUser } from "./db";
 import TwitterBot from "./tweet/index";
 import { SolanaAgentKit } from "./solanaagentkit";
 import AgentKit from "./modifiedlang/agentkit";
@@ -19,7 +19,7 @@ const env = process.env.ENVIRONMENT;
 export const OPEN_AI = process.env.OPENAI_API_KEY || "";
 export const API_KEY = process.env.HELIUS_API;
 export const BASE_URL =
-  env == "env"
+  env == "dev"
     ? "http://127.0.0.1:8000/api"
     : "https://api.yraytestings.com.ng/api";
 const USER_NAME = process.env.USER_NAME || "";
@@ -122,17 +122,15 @@ app.post("/test-bot", async (req: any, res: Response) => {
       executor,
       text
     );
-    res.status(200).json({ "answer": checkRug });
+    return res.status(200).json({ "answer": checkRug });
 
   } catch (error) {
-    res.status(500).json({ "Failed": error });
+    return res.status(500).json({ "Failed": error });
 
   }
 });
 
 app.get("/test-functions", async (req: any, res: Response) => {
-
-
 
   try {
     const response = await getTokenDataByTicker("SOLYAI")

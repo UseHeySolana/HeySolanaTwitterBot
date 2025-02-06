@@ -25,6 +25,7 @@ export class SolanaTransferTool extends Tool {
         : undefined;
 
       const tx = await this.solanaKit.transfer(
+        this.solanaKit,
         recipient,
         parsedInput.amount,
         mintAddress,

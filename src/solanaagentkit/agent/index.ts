@@ -1026,6 +1026,7 @@ export class SolanaAgentKit {
     return get_balance_other(this, walletAddress, tokenAddress);
   }
   async transfer(
+    agent: SolanaAgentKit,
     to: PublicKey,
     amount: number,
     mint?: PublicKey,

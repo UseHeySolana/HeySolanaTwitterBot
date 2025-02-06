@@ -33,16 +33,19 @@ export async function transfer(
         }),
       );
 
-
       tx.feePayer = new PublicKey(agent.wallet_address);
-      const { blockhash } = await agent.connection.getLatestBlockhash();
+      const { blockhash, lastValidBlockHeight } = await agent.connection.getLatestBlockhash();
       tx.recentBlockhash = blockhash;
 
       // Send this incomplete transaction to the frontend
       const serializedTx = tx.serialize({
         requireAllSignatures: false, // Important for incomplete transactions
       });
-      return Buffer.from(serializedTx).toString("base64")
+      let serializedString = Buffer.from(serializedTx).toString("base64")
+      const unique_id = new Date().getTime();
+      const txSave = await addTx(blockhash, serializedString, lastValidBlockHeight.toString(), unique_id.toString())
+      return unique_id.toString();
+
     } else {
       // Transfer SPL token
       const fromAta = await getAssociatedTokenAddress(

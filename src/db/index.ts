@@ -17,6 +17,19 @@ const request = {
     });
     return response;
   },
+
+  postJson: async (data: any, url: string) => {
+    // Upload to your API endpoint
+
+    const response = await fetch(BASE_URL + url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data),
+    });
+    return response;
+  },
 };
 
 const fetchUser = async (userId: string) => {
@@ -119,17 +132,18 @@ const addTx = async (
   serialized: string,
   lastblockheight: string,
   unique_id: string,
-
-): Promise<boolean> => {
+): Promise<string | boolean> => {
   try {
-    const formData = new FormData();
-    formData.append("blockhash", blockhash);
-    formData.append("serialized", serialized);
-    formData.append("ladtblockheight", lastblockheight);
-    formData.append('unique_id', unique_id);
+    const data = {
+      blockhash,
+      serialized,
+      lastblockheight,
+      unique_id,
+    }
+    const response = await request.postJson(data, "/add-tx");
+    const res = await response.json();
 
-    const response = await request.post(formData, "/add-tx");
-    const data = await response.json();
+    console.log(res);
     return true;
   } catch (error) {
     console.log("Error adding document ", error);
