@@ -15,7 +15,6 @@ const convertSpeech = async (sentence: any) => {
 };
 
 const interpret = async (sentence: any, question: string) => {
-  console.log(sentence);
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
   });
@@ -26,6 +25,8 @@ const interpret = async (sentence: any, question: string) => {
       {
         role: "system",
         content: `""Interprete this response to a meaniful and more sensible sentence, based on what the user asked, this is the users question ${question}.
+
+        Your answer should be brief and correctly answer the question
         `,
       },
       {
