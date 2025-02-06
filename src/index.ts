@@ -13,9 +13,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const env = process.env.ENVIRONMENT;
+export const COOKIE_BASE = "https://api.cookie.fun/v2/agents";
 export const API_KEY = process.env.HELIUS_API;
+export const COOKIE_KEY = process.env.COOKIE_API || "";
 export const BASE_URL =
-  process.env.ENVIRONMENT == "dev"
+  env == "dev"
     ? "http://127.0.0.1:8000/api"
     : "https://api.yraytestings.com.ng/api";
 const USER_NAME = process.env.USER_NAME || "";
@@ -75,6 +78,17 @@ app.get("/process-mentions", async (req: any, res: Response) => {
       //Process the Tweets in the DB with AI and send Response
       let user = await fetchUser(tweet.createdby);
       if (!user) {
+        //Update the DB with the response
+        const sendDm = await twit.respondToMentionDM(
+          tweet.tweetid,
+          "Hey there! to be able to use AgentX kindly register on this link https://agentx.useheysolana.xyz/ and follow our mother page @useHeySolana",
+          tweet.createdby
+        );
+        if (sendDm) {
+          return res.json({ message: "Tweets Processed and Responded" });
+        } else {
+          return res.json({ message: "Tweets Processed and Responded" });
+        }
         res.status(200).json({ error: "Failed: No user found " });
       } else {
         const response = await openAiTwitter(tweet.text, user);

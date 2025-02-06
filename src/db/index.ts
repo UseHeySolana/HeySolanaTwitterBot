@@ -1,9 +1,10 @@
 import { BASE_URL } from "..";
 
 const request = {
-  get: async (url: string) => {
-    const response = await fetch(BASE_URL + url, {
+  get: async (url: string, headers?: Headers) => {
+    const response = await fetch(url, {
       method: "GET",
+      headers,
     });
 
     return response;
@@ -11,7 +12,7 @@ const request = {
   post: async (data: FormData, url: string) => {
     // Upload to your API endpoint
 
-    const response = await fetch(BASE_URL + url, {
+    const response = await fetch(url, {
       method: "POST",
       body: data,
     });
@@ -21,7 +22,7 @@ const request = {
 
 const fetchUser = async (userId: string) => {
   try {
-    const response = await request.get(`/fetch_user/${userId}`);
+    const response = await request.get(`${BASE_URL}/fetch_user/${userId}`);
     // const docRef = doc(db, "message", userId);
     if (response) {
       const data = await response.json();
@@ -47,7 +48,7 @@ const addTweet = async (
     formData.append("tweet", tweet);
     formData.append("user_id", userId);
 
-    const response = await request.post(formData, "/add_tweet");
+    const response = await request.post(formData, `${BASE_URL}/add_tweet`);
     const data = await response.json();
     return true;
   } catch (error) {
@@ -58,7 +59,7 @@ const addTweet = async (
 
 const markResponse = async (tweetId: string) => {
   try {
-    const response = await request.get(`/mark_response/${tweetId}`);
+    const response = await request.get(`${BASE_URL}/mark_response/${tweetId}`);
     const result = await response.json();
     return result;
   } catch (error) {
@@ -71,7 +72,7 @@ const saveCookie = async (cookie: string) => {
   try {
     const formData = new FormData();
     formData.append("cookie", cookie);
-    const response = await request.post(formData, "/add_cookie");
+    const response = await request.post(formData, `${BASE_URL}/add_cookie`);
     const data = await response.json();
     return data;
   } catch (error) {
@@ -82,7 +83,7 @@ const saveCookie = async (cookie: string) => {
 
 const fetchCookie = async () => {
   try {
-    const response = await request.get(`/fetch_cookie`);
+    const response = await request.get(`${BASE_URL}/fetch_cookie`);
     const data = await response.json();
     return data.cookie;
   } catch (error) {
@@ -93,7 +94,7 @@ const fetchCookie = async () => {
 
 const fetchTweets = async () => {
   try {
-    const response = await request.get(`/fetch_tweets`);
+    const response = await request.get(`${BASE_URL}/fetch_tweets`);
     const data = await response.json();
     return data;
   } catch (error) {
@@ -108,4 +109,5 @@ export {
   saveCookie,
   fetchCookie,
   fetchTweets,
+  request,
 };

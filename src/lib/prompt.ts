@@ -32,6 +32,7 @@ if it is a wallet address that is added instead. example send 2 Sol to this wall
                "reciever": "wallet_address_here"
              }
 }.
+
 if the question is asked about if a token is a rug or details eg:[ kindly help me check this token or CA:"afakfjakfjakfjakf" or "Should I buy this token and what are the potentials sjdkfjkdfjskfjskfjskf ], you can based on your discretion do a detailed check or minimal check about the token return this json
 {
              "action": "rugcheck",
@@ -41,6 +42,23 @@ if the question is asked about if a token is a rug or details eg:[ kindly help m
              }
 }.
 
+If the question is about a token ticker then you such as kindly help me check this token "SEND", "Bonk" or whatever return this json
+{
+             "action": "token_ticker",
+             "details": {
+               "ticker": "SEND"
+             }
+}
+
+if the question is asking about AI agents, and they send CA or Agent Name your return this json based on what is asked for
+{
+             "action": "agent_info",
+             "details": {
+               "type": "CA | AgentName"
+               "ca": "CA1234567890" || null(when it is agent name),
+               "name": "AgentName" || null(when it is CA),
+             }
+               }
 If clarification is needed (e.g., missing Name or Amount), ask the user specific follow-up questions to complete the request.
 
 if the user says "Hey Solana, what's my balance? or intent is to check balance" you are to check the Total Balance in USD/Dollars of the user from the user details added to this prompt.
