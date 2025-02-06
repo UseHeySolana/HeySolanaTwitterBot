@@ -63,6 +63,17 @@ const openAiTwitter = async (text: any, user: any) => {
               ? await agent.rugCheckMinimal(details.mint, text)
               : await agent.rugCheckDetailed(details.mint, text);
           return dets;
+        case "token_ticker":
+          const ticker = object.details.ticker;
+          const res = await agent.fetchTokenByTicker(ticker, text);
+          return res;
+        case "agent_info":
+          // const agentName = object.details.agent;
+          const searchType = object.details.type;
+          const agentName = object.details.name;
+          const agentCA = object.details.ca;
+          const info = searchType == "ca" ? await agent.getCA(agentCA, text) : agent.getUsername(agentName, text);
+          return info;
         case "swap":
           const token = object.details.token;
           return "Sorry, I couldn't process your swap. Please try again.";
