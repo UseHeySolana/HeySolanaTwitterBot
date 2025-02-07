@@ -24,7 +24,13 @@ export const BASE_URL =
 const USER_NAME = process.env.USER_NAME || "";
 const PASSWORD = process.env.PASSWORD || "";
 
-const twit = new TwitterBot(USER_NAME, PASSWORD);
+const api_secret_key = process.env.TWITTER_API_SECRET_KEY || "";
+const api_secret = process.env.TWITTER_API_SECRET || "";
+
+const access_token = process.env.TWITTER_ACCESS_TOKEN || "";
+const access_secret = process.env.TWITTER_ACCESS_SECRET || "";
+
+const twit = new TwitterBot(USER_NAME, PASSWORD, api_secret_key, api_secret, access_secret, access_token);
 /**
  * Functions to be done
  * 1. Scrape Tweet To Get Mentions
@@ -84,7 +90,11 @@ app.get("/process-mentions", async (req: any, res: Response) => {
             tweet.tweetid,
             "Hey there! To use AgentX, kindly register here: https://agentx.useheysolana.xyz/ and follow @useHeySolana."
           );
+          if (sendDm) {
           responses.push({ tweetId: tweet.tweetid, message: "Responded with no user info" });
+          } else {
+            responses.push({ tweetId: tweet.tweetid, message: "Tweet was not sent" });
+          }
         } else {
           const response = await openAiTwitter(tweet.text, user);
           const sendDm = await twit.respondToMentionDM(tweet.tweetid, response);

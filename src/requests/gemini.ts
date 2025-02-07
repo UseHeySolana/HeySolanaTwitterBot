@@ -26,7 +26,7 @@ const interpret = async (sentence: any, question: string) => {
         role: "system",
         content: `""Interprete this response to a meaniful and more sensible sentence, based on what the user asked, this is the users question ${question}.
 
-        Your answer should be brief and correctly answer the question
+        Your answer should be brief and correctly answer the question and limited to 200 characters as the response is a tweet.
         `,
       },
       {
