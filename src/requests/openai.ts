@@ -3,8 +3,12 @@ import { prompA } from "../lib/prompt";
 import { aiTransfer } from "../wallets/ai_functions";
 import { getTokens } from "../wallets/transfers";
 import AgentTools from "../tools";
+import { PublicKey } from "@solana/web3.js";
+
+const toPubkey = (key: string) => new PublicKey(key)
 
 const openAiTwitter = async (text: any, user: any) => {
+
   const agent = new AgentTools()
   const userDetails = await getTokens(user.wallet_address);
   const openai = new OpenAI({
@@ -44,6 +48,7 @@ const openAiTwitter = async (text: any, user: any) => {
   const jsonMatch =
     completion?.choices[0]?.message?.content?.match(/\{[\s\S]*\}/) || null;
 
+
   if (isJson(jsonMatch)) {
     if (jsonMatch === null)
       return (
@@ -75,8 +80,18 @@ const openAiTwitter = async (text: any, user: any) => {
           const info = searchType == "ca" ? await agent.getCA(agentCA, text) : agent.getUsername(agentName, text);
           return info;
         case "swap":
-          const token = object.details.token;
-          return "Sorry, I couldn't process your swap. Please try again.";
+          const swap = object.details;
+
+          const swapRes = await agent.swapTokens(toPubkey(swap.wallet_address), toPubkey(swap.outputMint), toPubkey(swap.inputMint), swap.amount, text);
+          return swapRes;
+        case "stake":
+          // const stake = object.details;
+          // const toPubkey = (key: string) => new PublicKey(key)
+          // const swapRes = await agent.swapTokens(toPubkey(swap.wallet_address), toPubkey(swap.outputMint), toPubkey(swap.inputMint), swap.amount, text);
+          // return swapRes;
+          return "";
+        case "fetch_price":
+          return "";
         default:
           return "Unrecognized action.";
       }

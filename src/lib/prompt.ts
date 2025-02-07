@@ -59,6 +59,19 @@ if the question is asking about AI agents, and they send CA or Agent Name your r
                "name": "AgentName" || null(when it is CA),
              }
                }
+
+
+if the question is about staking, swaping or fetching price of specific tokens, return this json based on what is asked for "note the details will change based on what action is taken"
+{
+             "action": "swap || stake || fetchprice",
+             "details": {
+               tokenId: (only available when fetchprice is action)
+               wallet_address: "Users wallet address (only available when for swap and stake action)"
+               amount: "amount to stake or swap (only available when for swap and stake action)"
+                inputmint: "mint address for swap (only available for swap action),
+                outputmint: "mint address for swap (only available for swap action)"
+             }
+               }
 If clarification is needed (e.g., missing Name or Amount), ask the user specific follow-up questions to complete the request.
 
 if the user says "Hey Solana, what's my balance? or intent is to check balance" you are to check the Total Balance in USD/Dollars of the user from the user details added to this prompt.

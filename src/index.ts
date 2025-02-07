@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { fetchTweets, fetchUser } from "./db";
 import { openAiTwitter } from "./requests/openai";
 import TwitterBot from "./tweet/index";
+import { Connection } from "@solana/web3.js";
+import AgentKit from "./lib/agentClass";
 
 const express = require("express");
 const dotenv = require("dotenv");
@@ -23,6 +25,7 @@ export const BASE_URL =
     : "https://api.yraytestings.com.ng/api";
 const USER_NAME = process.env.USER_NAME || "";
 const PASSWORD = process.env.PASSWORD || "";
+export const connection = new Connection(env == "dev" ? "https://devnet.helius-rpc.com/?api-key=" + API_KEY : "https://mainnet.helius-rpc.com/?api-key=" + API_KEY)
 
 const twit = new TwitterBot(USER_NAME, PASSWORD);
 /**
@@ -120,7 +123,11 @@ app.post("/test-bot", async (req: any, res: Response) => {
   const user = {
     wallet_address: "13dqNw1su2UTYPVvqP6ahV8oHtghvoe2k2czkrx9uWJZ",
   };
-  const response = await openAiTwitter(text, user);
+
+  const agent = new AgentKit(text, user, process.env.OPENAI_API_KEY || "")
+
+  const executor = await agent.setupAgent();
+  const response = await agent.runAgent(executor, text)
   res.status(200).json({ message: response });
 });
 
