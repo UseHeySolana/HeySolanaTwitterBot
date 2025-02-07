@@ -98,41 +98,16 @@ app.get("/process-mentions", async (req: any, res: Response) => {
         } else {
           const response = await openAiTwitter(tweet.text, user);
           const sendDm = await twit.respondToMentionDM(tweet.tweetid, response);
-          responses.push({ tweetId: tweet.tweetid, message: "Tweet processed and responded" });
+          if (sendDm) {
+            responses.push({ tweetId: tweet.tweetid, message: "Tweet processed and responded" });
+          } else {
+            responses.push({ tweetId: tweet.tweetid, message: "Tweet was not sent" });
+          }
         }
       }
 
       res.json({ message: "All tweets processed", results: responses });
-      // for (const tweet of tweets as any) {              
-      // //Process the Tweets in the DB with AI and send Response
-      // let user = await fetchUser(tweet.createdby);
-      //   console.log(user);
-      // if (!user) {
-      //   //Update the DB with the response
-      //   const sendDm = await twit.respondToMentionsQuote(
-      //     tweet.tweetid,
-      //     "Hey there! to be able to use AgentX kindly register on this link https://agentx.useheysolana.xyz/ and follow our mother page @useHeySolana",
-      //   );
-      //   console.log(sendDm)
-      //   // if (sendDm) {
-      //   //   return res.json({ message: "Tweets Processed and Responded with no user info" });
-      //   // } else {
-      //   return res.json({ message: "Tweets Processed and Responded with no user info" });
-      //   // }
-      // } else {
-      //   const response = await openAiTwitter(tweet.text, user);
-      //   //Update the DB with the response
-      //   const sendDm = await twit.respondToMentionDM(
-      //     tweet.tweetid,
-      //     response,
-      //   );
-      //   if (sendDm) {
-      //     return res.json({ message: "Tweets Processed and Responded" });
-      //   } else {
-      //     return res.json({ message: "Tweets Processed and Responded" });
-      //   }
-      // }
-      // }
+
     } else {
       return res.json({ message: "No tweets to process" });
     }

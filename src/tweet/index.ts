@@ -112,8 +112,9 @@ class TwitterBot {
   ): Promise<boolean> {
     try {
       let res = await this.scraper.sendTweet(message, tweetId);
-      console.log(res);
+      if (res) {
       await markResponse(tweetId);
+      } else { return false }
       return true;
     } catch (error) {
       console.error(error);
