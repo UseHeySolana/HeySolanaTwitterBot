@@ -82,14 +82,19 @@ class TwitterBot {
     tweetId: string,
     message: string
   ): Promise<boolean> {
+    try {
+      await this.scraper.sendQuoteTweet(message, tweetId);
     await markResponse(tweetId);
     return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   }
 
   async respondToMentionDM(
     tweetId: string,
     message: string,
-    userId: string
   ): Promise<boolean> {
     try {
       await this.scraper.sendTweet(message, tweetId);
