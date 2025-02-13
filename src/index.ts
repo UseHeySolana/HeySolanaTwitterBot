@@ -88,7 +88,7 @@ app.get("/process-mentions", async (req: any, res: Response) => {
         if (!user) {
           const sendDm = await twit.respondToMentionsQuote(
             tweet.tweetid,
-            "Hey there! To use AgentX, kindly register here: https://agentx.useheysolana.xyz/ and follow @useHeySolana."
+            "Hey there! To use AgentX, kindly register here: https://agentx.yraylabs.fun/ and follow @useHeySolana."
           );
           if (sendDm) {
           responses.push({ tweetId: tweet.tweetid, message: "Responded with no user info" });
