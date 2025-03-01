@@ -83,8 +83,6 @@ app.get("/process-mentions", async (req: any, res: Response) => {
     if (tweets.length > 0) {
       for (const tweet of tweets) {
         let user = await fetchUser(tweet.createdby);
-        console.log(user);
-
         if (!user) {
           const sendDm = await twit.respondToMentionsQuote(
             tweet.tweetid,
@@ -97,7 +95,7 @@ app.get("/process-mentions", async (req: any, res: Response) => {
           }
         } else {
           const response = await openAiTwitter(tweet.text, user);
-          const sendDm = await twit.respondToMentionDM(tweet.tweetid, response);
+          const sendDm = await twit.respondToMentionDM(tweet.tweetid, response, user.username);
           if (sendDm) {
             responses.push({ tweetId: tweet.tweetid, message: "Tweet processed and responded" });
           } else {

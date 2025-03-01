@@ -109,9 +109,10 @@ class TwitterBot {
   async respondToMentionDM(
     tweetId: string,
     message: string,
+    user: string,
   ): Promise<boolean> {
     try {
-      let res = await this.scraper.sendTweet(message, tweetId);
+      let res = await this.scraper.sendTweet(`@${user}` + " " + message, tweetId);
       if (res) {
       await markResponse(tweetId);
       } else { return false }
