@@ -18,7 +18,7 @@ AgentX integrates with the following components:
 
 ## Setup and Registration
 ### Sign Up
-1. Visit [AgentX Sign-Up Page](https://agentx.useheysolana.xyz/).
+1. Visit [AgentX Sign-Up Page](https://agent-x-by-hey-solana.vercel.app/).
 2. Enter:
    - X username
    - Email address

@@ -24,11 +24,10 @@ const fetchUser = async (userId: string) => {
   try {
     const response = await request.get(`${BASE_URL}/fetch_user/${userId}`);
     // const docRef = doc(db, "message", userId);
-    if (response) {
+    if (response.ok) {
       const data = await response.json();
       return data;
     } else {
-      console.log("No Such User!");
       return false;
     }
   } catch (e) {

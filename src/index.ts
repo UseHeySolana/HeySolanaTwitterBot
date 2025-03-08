@@ -24,7 +24,13 @@ export const BASE_URL =
 const USER_NAME = process.env.USER_NAME || "";
 const PASSWORD = process.env.PASSWORD || "";
 
-const twit = new TwitterBot(USER_NAME, PASSWORD);
+const api_secret_key = process.env.TWITTER_API_SECRET_KEY || "";
+const api_secret = process.env.TWITTER_API_SECRET || "";
+
+const access_token = process.env.TWITTER_ACCESS_TOKEN || "";
+const access_secret = process.env.TWITTER_ACCESS_SECRET || "";
+
+const twit = new TwitterBot(USER_NAME, PASSWORD, api_secret_key, api_secret, access_secret, access_token);
 /**
  * Functions to be done
  * 1. Scrape Tweet To Get Mentions
@@ -72,39 +78,34 @@ app.get("/process-mentions", async (req: any, res: Response) => {
   try {
     //Get Tweets
     const tweets = await fetchTweets();
+    const responses = [];
 
     if (tweets.length > 0) {
-    for (const tweet of tweets as any) {
-      //Process the Tweets in the DB with AI and send Response
-      let user = await fetchUser(tweet.createdby);
-      if (!user) {
-        //Update the DB with the response
-        const sendDm = await twit.respondToMentionDM(
-          tweet.tweetid,
-          "Hey there! to be able to use AgentX kindly register on this link https://agentx.useheysolana.xyz/ and follow our mother page @useHeySolana",
-          tweet.createdby
-        );
-        if (sendDm) {
-          return res.json({ message: "Tweets Processed and Responded" });
+      for (const tweet of tweets) {
+        let user = await fetchUser(tweet.createdby);
+        if (!user) {
+          const sendDm = await twit.respondToMentionsQuote(
+            tweet.tweetid,
+            "Hey there! To use AgentX, kindly register here: https://agentx.yraylabs.fun/ and follow @useHeySolana."
+          );
+          if (sendDm) {
+          responses.push({ tweetId: tweet.tweetid, message: "Responded with no user info" });
+          } else {
+            responses.push({ tweetId: tweet.tweetid, message: "Tweet was not sent" });
+          }
         } else {
-          return res.json({ message: "Tweets Processed and Responded" });
-        }
-        res.status(200).json({ error: "Failed: No user found " });
-      } else {
-        const response = await openAiTwitter(tweet.text, user);
-        //Update the DB with the response
-        const sendDm = await twit.respondToMentionDM(
-          tweet.tweetid,
-          response,
-          tweet.createdby
-        );
-        if (sendDm) {
-          return res.json({ message: "Tweets Processed and Responded" });
-        } else {
-          return res.json({ message: "Tweets Processed and Responded" });
+          const response = await openAiTwitter(tweet.text, user);
+          const sendDm = await twit.respondToMentionDM(tweet.tweetid, response, user.username);
+          if (sendDm) {
+            responses.push({ tweetId: tweet.tweetid, message: "Tweet processed and responded" });
+          } else {
+            responses.push({ tweetId: tweet.tweetid, message: "Tweet was not sent" });
+          }
         }
       }
-      }
+
+      res.json({ message: "All tweets processed", results: responses });
+
     } else {
       return res.json({ message: "No tweets to process" });
     }

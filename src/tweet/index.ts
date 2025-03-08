@@ -6,7 +6,11 @@ class TwitterBot {
   // private username: string;
   // private password: string;
 
-  constructor(private username: string, private password: string) {
+  constructor(private username: string, private password: string,
+    private appKey: string,
+    private appSecret: string,
+    private accessTokenSecret: string,
+    private accessToken: string) {
     this.scraper = new Scraper();
   }
 
@@ -18,7 +22,16 @@ class TwitterBot {
   }
 
   async login(): Promise<void> {
-    await this.scraper.login(this.username, this.password);
+
+    await this.scraper.login(
+      this.username,
+      this.password,
+      undefined,
+      this.appKey,
+      this.appSecret,
+      this.accessToken,
+      this.accessTokenSecret
+    );
     await this.getCookies();
   }
 
@@ -82,18 +95,27 @@ class TwitterBot {
     tweetId: string,
     message: string
   ): Promise<boolean> {
+    try {
+      const tweet = await this.scraper.sendQuoteTweet(message, tweetId);
+
     await markResponse(tweetId);
     return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   }
 
   async respondToMentionDM(
     tweetId: string,
     message: string,
-    userId: string
+    user: string,
   ): Promise<boolean> {
     try {
-      await this.scraper.sendTweet(message, tweetId);
+      let res = await this.scraper.sendTweet(`@${user}` + " " + message, tweetId);
+      if (res) {
       await markResponse(tweetId);
+      } else { return false }
       return true;
     } catch (error) {
       console.error(error);
