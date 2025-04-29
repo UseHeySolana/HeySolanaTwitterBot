@@ -12,6 +12,7 @@ export interface TokenCheck {
 
 const BASE_URL = "https://api.rugcheck.xyz/v1";
 
+
 /**
  * Fetches a summary report for a specific token.
  * @async
